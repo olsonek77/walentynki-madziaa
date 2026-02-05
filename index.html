@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walentynki</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff9aa2, #ffc3a0);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 90vw;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 30px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .buttons {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      max-width: 300px;
+      height: 120px;
+    }
+
+    button {
+      border: none;
+      border-radius: 50px;
+      padding: 15px 25px;
+      font-size: clamp(16px, 4vw, 20px);
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    #yesBtn {
+      background-color: #ff4d6d;
+      color: white;
+      transform: scale(1);
+    }
+
+    #yesBtn:hover {
+      background-color: #ff1e4d;
+    }
+
+    #noBtn {
+      background-color: #ffffff;
+      color: #ff4d6d;
+      position: absolute;
+      left: 0;
+      top: 60px;
+    }
+
+    #message {
+      font-size: clamp(1.6rem, 5vw, 2.3rem);
+      display: none;
+      margin-top: 20px;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    #details img {
+      width: min(300px, 80vw);
+      border-radius: 20px;
+      margin-top: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 8s linear infinite;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
+
+    @keyframes float {
+      from { transform: translateY(100vh) rotate(45deg); }
+      to { transform: translateY(-10vh) rotate(45deg); }
+    }
+
+    @keyframes fall {
+      from { transform: translateY(-50px); }
+      to { transform: translateY(110vh); }
+    }
+
+    @media (max-width: 500px) {
+      .buttons { height: 160px; }
+      #noBtn { top: 80px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Madziu, czy zostaniesz moją walentynką? 💖</h1>
+
+    <div class="buttons">
+      <button id="yesBtn">TAK</button>
+      <button id="noBtn">NIE</button>
+    </div>
+
+    <div id="message">
+      Bardzo się cieszę, Myszko 💖<br><br>
+      To oficjalne zaproszenie na walentynkowy seans i kolację 🍿🌹<br><br>
+      ⏰ <strong>15:00</strong><br><br>
+
+      <button id="detailsBtn">Kliknij po szczegóły 💌</button><br><br>
+
+      <div id="details" style="display:none; font-size:1.1rem; margin-top:15px;">
+        <img src="zdjecie.jpg" alt="Nasze zdjęcie"><br>
+        <strong>Kocham Cię ❤️</strong>
+      </div><br>
+
+      <strong>Olaf</strong>
+    </div>
+  </div>
+
+  <audio id="music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b0c0a1d6b.mp3?filename=romantic-background-112191.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const message = document.getElementById('message');
+    const music = document.getElementById('music');
+
+    let scale = 1;
+
+    const texts = [
+      'Na pewno? 😢',
+      'Pomyśl jeszcze raz... 💔',
+      'No weź... 🥺',
+      'Będzie mi bardzo smutno 😭',
+      'Ostatnia szansa! 💘'
+    ];
+
+    let index = 0;
+
+    function moveNoButton() {
+      const maxX = window.innerWidth - noBtn.offsetWidth;
+      const maxY = window.innerHeight - noBtn.offsetHeight;
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top = Math.random() * maxY + 'px';
+    }
+
+    noBtn.addEventListener('click', () => {
+      scale += 0.25;
+      yesBtn.style.transform = `scale(${scale})`;
+      if (index < texts.length) noBtn.textContent = texts[index++];
+      moveNoButton();
+    });
+
+    document.getElementById('detailsBtn')?.addEventListener('click', () => {
+      document.getElementById('details').style.display = 'block';
+    });
+
+    yesBtn.addEventListener('click', () => {
+      message.style.display = 'block';
+      document.querySelector('h1').style.display = 'none';
+      document.querySelector('.buttons').style.display = 'none';
+      music.play().catch(() => {});
+      startConfetti();
+    });
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }
+
+    setInterval(createHeart, 300);
+
+    function startConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = '-20px';
+        heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+      }
+
+      for (let i = 0; i < 20; i++) {
+        const rose = document.createElement('div');
+        rose.textContent = '🌹';
+        rose.style.position = 'fixed';
+        rose.style.left = Math.random() * 100 + 'vw';
+        rose.style.top = '-40px';
+        rose.style.fontSize = (Math.random() * 20 + 20) + 'px';
+        rose.style.animation = `fall ${Math.random() * 3 + 3}s linear forwards`;
+        document.body.appendChild(rose);
+        setTimeout(() => rose.remove(), 6000);
+      }
+    }
+
+    document.body.addEventListener('click', () => {
+      music.play().catch(() => {});
+    }, { once: true });
+  </script>
+</body>
+</html>
